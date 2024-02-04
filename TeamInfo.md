@@ -12,8 +12,8 @@
 | Member1     |   luke12@illinois.edu  |
 | Member2     |        Caleb Yu        |
 | Member2     |   cyu62@illinois.edu   |
-| Member3     |                        |
-| Member3     |                        |
+| Member3     |      Pavrita Aneja     |
+| Member3     |  paneja3@illinois.edu  |
 
 ## Project Information
 
