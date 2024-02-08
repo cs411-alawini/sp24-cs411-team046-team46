@@ -3,7 +3,7 @@
 
 # What is SickSense?
 
-
+For our project we are planning to create a web application that will utilize an AI chatbot that will provide information on the user’s inputted symptoms. The user will be able to make their own account where they will have access to various services. One service they will have access to is the AI chatbot. After inputting the symptoms to the chatbot, the user will be shown probable diseases that they may be experiencing. We will be making the disease prediction based on various datasets that provide information regarding diseases, illnesses, and other health concerns. Also, the user would also be able to access more information regarding the diseases and information on possible next steps regarding their health concern. We also hope to save the user data such as medical records or past chatbot queries to allow for a more personal user experience.
 
 # What do we do and what are we trying to solve?
 
@@ -65,7 +65,7 @@ User data such as medical records and previous form results will be saved to the
 
 Below is a sketch of what our web application may look like in the future:
 
-![UIMockup](https://imgur.com/a/DFzhQMK)
+![UIMockup](https://i.imgur.com/0SFM1EP.png)
 
 # Project Work Distribution
 
