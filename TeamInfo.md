@@ -19,10 +19,10 @@
 
 |   Info      |        Description     |
 | ----------- | ---------------------- |
-|  Title      |       ProjectTitle     |
+|  Title      |       SickSense     |
 | System URL  |      link_to_system    |
 | Video Link  |      link_to_video     |
 
 ## Project Summary
 
-This is our amazing project.
+For our project we are planning to create a web application that will utilize an AI chatbot (or a search bar) that will be able to help users with their health issues and provide medication by taking their symptoms and other medical information as inputs. The user will be able to set up their own account where they will be able to enter various things like age, gender, medical history etc. After inputting their symptoms, and with their saved information, the user will be shown probable diseases that they may be experiencing. We will be making the disease prediction based on various public datasets that provide information regarding diseases, and other health concerns. Also, the user would also be able to access more information related to possible next steps regarding their health concern. A login system will let us save user data such as medical records or past chatbot queries to allow for a more personal user experience.
