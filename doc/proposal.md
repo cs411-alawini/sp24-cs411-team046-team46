@@ -1,5 +1,5 @@
 # SickSense
-## _We are your sixth sense._
+_We are your sixth sense._
 
 ## What is SickSense?
 
