@@ -3,8 +3,6 @@
 ## Assumptions
 - User: Represents users information. Modeled as an entity because each user has various unique attributes such as name, age, sex, etc. Having access to this information will allow for a more personalized, tailored service for users. We will use user’s information to provide a personalized diagnosis and treatment. There will be one user to many diseases since we want to provide multiple diseases the user could be experiencing.
 
-- Diagnosis: Represents each diagnosis of a user. Modeled as an entity because each user can have multiple diagnoses, which each have their own respective disease. Also, we have access to the state of each diagnosis, which shows whether the user currently has the disease or has had it in the past. Since a user can have multiple diagnoses, this is a 1-many relationship.
-
 - Chatbot: Stores chat logs pertaining to each user. Modeled as an entity in order to store all the user’s past chat logs. We want user’s to be able to look at past chat queries at any time. There will be many chat logs for each user since users may make multiple chat queries, therefore creating a 1-many relationship between User and Chatbot. 
 
 - Disease: Provides a variety of different diseases. Modeled as an entity because diseases have various attributes such as name, associated symptoms, treatments, etc. Having access to these attributes will allow us to match up diseases based on the symptoms experienced by the user. There will be many diseases for each user as we are planning to provide multiple diseases the user may be experiencing.
