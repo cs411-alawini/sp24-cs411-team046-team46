@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>User System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div class="container mt-4">
+    <div class="card">
+      <div class="card-body">
+        <h2>Please add your information below</h2>
+        <form action="mark" method="POST">
+          <div class="form-group">
+            <label for="userid">User ID</label>
+            <input type="text" class="form-control col-lg-9" id="userid" placeholder="Enter User ID" name="userid">
+	    <label for="firstname">First Name</label>
+            <input type="text" class="form-control col-lg-9" id="firstname" placeholder="Enter First Name" name="firstname">	
+	    <label for="lastname">Last Name</label>
+            <input type="text" class="form-control col-lg-9" id="lastname" placeholder="Enter Last Name" name="lastname">
+	    <label for="height">Height</label>
+            <input type="text" class="form-control col-lg-9" id="height" placeholder="Enter Height" name="height">
+            <label for="weight">Weight</label>
+            <input type="text" class="form-control col-lg-9" id="weight" placeholder="Enter Weight" name="weight">
+	    <label for="sex">Sex</label>
+            <input type="text" class="form-control col-lg-9" id="sex" placeholder="Enter Sex" name="sex">
+	    <label for="age">Age</label>
+            <input type="text" class="form-control col-lg-9" id="netid" placeholder="Enter Age" name="age">
+	    <label for="race">Race</label>
+            <input type="text" class="form-control col-lg-9" id="race" placeholder="Enter Race" name="race">
+	    <label for="email">Email</label>
+            <input type="text" class="form-control col-lg-9" id="email" placeholder="Enter Email ID" name="email">
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <!-- Button to Show Users -->
+        <button type="button" class="btn btn-info mt-3" id="loadUsersBtn" data-toggle="modal" data-target="#viewUsersModal">
+          View all Users
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal for Viewing Users -->
+    <div class="modal fade" id="viewUsersModal" tabindex="-1" role="dialog" aria-labelledby="viewUsersModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="viewUsersModalLabel">User Records</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">User ID</th>
+                  <th scope="col">First Name</th>
+                  <th scope="col">Last Name</th>
+		  <th scope="col">Height</th>
+		  <th scope="col">Weight</th>
+		  <th scope="col">Sex</th>
+		  <th scope="col">Age</th>
+		  <th scope="col">Race</th>
+                </tr>
+              </thead>
+              <tbody id="userBody">
+                <!-- User rows will be inserted here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  $(document).ready(function() {
+    $('#loadUsersBtn').click(function() {
+      $.ajax({
+        url: '/api/users',
+        method: 'GET',
+        success: function(data) {
+          var rows = '';
+          data.forEach(function(users, index) {
+            rows += `<tr>
+		       <th scope="row">${index + 1}</th>
+		       <td>${users.FirstName}</td>
+		       <td>${users.LastName}</td>
+		       <td>${users.Height}</td>
+		       <td>${users.Weight}</td>
+		       <td>${users.Sex}</td>
+		       <td>${users.Age}</td>
+		       <td>${users.Race}</td>
+                     </tr>`;
+          });
+          $('#userBody').html(rows);
+        },
+        error: function() {
+          alert('Failed to load user data.');
+        }
+      });
+    });
+  });
+ </script>
+</body>
+</html>
