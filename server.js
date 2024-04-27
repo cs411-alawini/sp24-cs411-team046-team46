@@ -46,6 +46,21 @@ app.get('/success', function(req, res) {
       res.send({'message': 'User request done'});
 });
 
+app.get('/symptomlist', function(req, res) {
+    var sql = 'SELECT distinct SymptomName FROM symptoms';
+
+  connection.query(sql, function(err, results) {
+    if (err) {
+      console.error('Error fetching symptom data:', err);
+      res.status(500).send({ message: 'Error fetching symptom data', error: err });
+      return;
+    }
+    const symptoms = results.map(result => result.symptomname)
+    res.json(symptoms);
+  });
+});
+
+
 // this code is executed when a user clicks the form submit button
 app.post('/mark', function(req, res) {
   var userid = req.body.userid;
@@ -156,3 +171,4 @@ app.get('/api/users', function(req, res) {
 app.listen(80, function () {
     console.log('Node app is running on port 80');
 });
+
