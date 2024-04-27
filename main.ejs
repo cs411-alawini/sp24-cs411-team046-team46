@@ -32,6 +32,7 @@
         </form>
         <!-- Result container -->
         <div id="resultContainer" class="mt-3"></div>
+        <button type="button" class="btn btn-success mt-3" id="redirectBtn">ChatBot</button>
       </div>
     </div>
   </div>
@@ -63,6 +64,13 @@
             alert('Failed to track symptoms.');
           }
         });
+      });
+    });
+  </script>
+<script>
+    $(document).ready(function() {
+        $('#redirectBtn').click(function() {
+            window.location.href = '/chatbot';
       });
     });
   </script>
