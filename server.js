@@ -1,3 +1,4 @@
+var OpenAI = require('openai');
 var express = require('express');
 var bodyParser = require('body-parser');
 var mysql = require('mysql2');
@@ -8,10 +9,13 @@ var connection = mysql.createConnection({
                 password: 'team46-$',
                 database: 'team46db'
 });
-
+const OPENAI_API_KEY="sk-proj-LY9iZ9ZwF5oan1Pi7GAnT3BlbkFJH5WISY5jC1rXbTeeGaUH";
 connection.connect;
 
-
+const openai = new OpenAI({
+  apiKey: OPENAI_API_KEY
+});
+var currUser = 0;
 var app = express();
 
 // set up ejs view engine
@@ -32,6 +36,10 @@ app.get('/create', function(req, res) {
 
 app.get('/main', function(req, res) {
   res.render('main', { title: 'Give your symptoms' });
+});
+
+app.get('/chatbot', function(req, res) {
+  res.render('chatindex', { title: 'Talk to an AI chatbot' });
 });
 
 app.get('/success', function(req, res) {
@@ -85,15 +93,51 @@ app.post('/login', function(req, res) {
     } else {
 
   connection.query(sql, [userid], function(err, result) {
-    if (result[0]['password'] != [password]) {
+    var resultpass = JSON.stringify(result[0]['password']);
+    var newstr = "";
+    var cont = false;
+    for (let i = 0; i < resultpass.length; i++) {
+         if (cont) { 
+		cont = false;
+		continue;
+	 }
+         if (resultpass[i] == '\\') {
+		cont = true;
+         } else {
+		newstr += resultpass[i];
+	 }
+    };
+    var inputpass = JSON.stringify(password)
+    if (newstr != inputpass) {
+      console.log('pass was:', newstr, 'got it?');
+      console.log('input is:', inputpass, 'got it?');
       console.error('Wrong password');
       res.status(500).send('Sorry, wrong Password. Try again!');
       return;
     }
     console.log('Received userID:', userid);
-    res.redirect('\create');
+    currUser = userid;
+    res.send("Done!");
   });}
   });
+});
+
+app.post('/chat', async function (req, res) {
+   const userInput = req.body.message;
+
+   try {
+       const completion = await openai.chat.completions.create({
+           model: 'gpt-3.5-turbo',
+           messages: [{ role: 'user', content: userInput }],
+       });
+
+       const completionText = completion.choices[0].message.content;
+
+       res.json({ message: completionText });
+   } catch (error) {
+       console.error(error);
+       res.status(500).json({ error: 'An error occurred' });
+   }
 });
 
 app.get('/api/users', function(req, res) {
