@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Symptom Tracker</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div class="container mt-4">
+    <div class="card">
+      <div class="card-body">
+        <h2>Please enter your symptoms below</h2>
+        <form id="symptomForm">
+          <div class="form-group">
+            <label for="symptom1">Symptom 1</label>
+            <input type="text" class="form-control" id="symptom1" placeholder="Enter Symptom 1" name="symptom1">
+          </div>
+          <div class="form-group">
+            <label for="symptom2">Symptom 2</label>
+            <input type="text" class="form-control" id="symptom2" placeholder="Enter Symptom 2" name="symptom2">
+          </div>
+          <div class="form-group">
+            <label for="symptom3">Symptom 3</label>
+            <input type="text" class="form-control" id="symptom3" placeholder="Enter Symptom 3" name="symptom3">
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <!-- Result container -->
+        <div id="resultContainer" class="mt-3"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      $('#symptomForm').submit(function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Get symptom values from form
+        var symptom1 = $('#symptom1').val();
+        var symptom2 = $('#symptom2').val();
+        var symptom3 = $('#symptom3').val();
+
+        // AJAX call to send symptom data to server
+        $.ajax({
+          url: '/api/track-symptoms',
+          method: 'POST',
+          data: {
+            symptom1: symptom1,
+            symptom2: symptom2,
+            symptom3: symptom3
+          },
+          success: function(response) {
+            // Display response in result container
+            $('#resultContainer').html('<p>' + response.message + '</p>');
+          },
+          error: function() {
+            alert('Failed to track symptoms.');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
