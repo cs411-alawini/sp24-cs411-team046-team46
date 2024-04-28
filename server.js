@@ -56,7 +56,7 @@ app.get('/symptomlist', function(req, res) {
       return;
     }
     const symptoms = results.map(result => result.symptomname)
-    res.json(symptoms);
+    res.json(results);
   });
 });
 
@@ -171,4 +171,3 @@ app.get('/api/users', function(req, res) {
 app.listen(80, function () {
     console.log('Node app is running on port 80');
 });
-
