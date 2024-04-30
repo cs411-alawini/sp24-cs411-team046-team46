@@ -25,7 +25,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '../public'));
 
-/* GET home page, respond by rendering index.ejs */
 app.get('/', function(req, res) {
   res.render('base', { title: 'Homepage' });
 });
@@ -50,12 +49,16 @@ app.get('/chatbot', function(req, res) {
   res.render('chatindex', { title: 'Talk to an AI chatbot' });
 });
 
+app.get('/sicksense', function(req, res) {
+  res.render('sicksense', { title: 'Show potential diseases' });
+});
+
 app.get('/success', function(req, res) {
       res.send({'message': 'User request done'});
 });
 
 app.get('/symptomlist', function(req, res) {
-    var sql = 'SELECT distinct SymptomName FROM symptoms';
+  var sql = 'SELECT distinct SymptomName FROM symptoms';
 
   connection.query(sql, function(err, results) {
     if (err) {
@@ -63,7 +66,20 @@ app.get('/symptomlist', function(req, res) {
       res.status(500).send({ message: 'Error fetching symptom data', error: err });
       return;
     }
-    const symptoms = results.map(result => result.symptomname)
+    res.json(results);
+  });
+});
+
+app.get('/diseaselist', function(req, res) {
+    var sql = 'SELECT distinct DiseaseName FROM diseases';
+  //  console.log(sql);
+  connection.query(sql, function(err, results) {
+    if (err) {
+      console.error('Error fetching disease data:', err);
+      res.status(500).send({ message: 'Error fetching disease data', error: err });
+      return;
+    }
+//    console.log(results)
     res.json(results);
   });
 });
@@ -96,7 +112,6 @@ app.post('/addNewDisease', function(req, res) {
   var sqlcheck = 'SELECT COUNT(*) FROM diseases WHERE DiseaseName = ?';
 
   connection.query(sqlcheck, [disease], function(error, results) {
-//    console.log(results[0]);
     if (results[0]["COUNT(*)"] >= 1) {
       var sql = 'UPDATE diseases SET Rarity = Rarity + 1 WHERE DiseaseName = ?';
       connection.query(sql, [disease], function(err1, results2) {
@@ -117,19 +132,6 @@ app.post('/addNewDisease', function(req, res) {
     res.send("Disease added successfully!");
 })};
 });
-});
-app.get('/diseaselist', function(req, res) {
-    var sql = 'SELECT distinct DiseaseName FROM diseases';
-  //  console.log(sql);
-  connection.query(sql, function(err, results) {
-    if (err) {
-      console.error('Error fetching disease data:', err);
-      res.status(500).send({ message: 'Error fetching disease data', error: err });
-      return;
-    }
-//    console.log(results)
-    res.json(results);
-  });
 });
 
 app.post('/mark', function(req, res) {
@@ -194,14 +196,12 @@ app.post('/login', function(req, res) {
     };
     var inputpass = JSON.stringify(password)
     if (newstr != inputpass) {
-      console.log('pass was:', newstr, 'got it?');
-      console.log('input is:', inputpass, 'got it?');
       console.error('Wrong password');
       res.status(500).send('Sorry, wrong Password. Try again!');
       return;
     }
-    console.log('Received userID:', userid);
     currUser = userid;
+    console.log('Received userID:', currUser);
     res.send("Done!");
   });}
   });
@@ -238,6 +238,84 @@ app.get('/api/users', function(req, res) {
   });
 });
 
+app.post('/api/update', function(req, res) {
+  var userid = currUser;
+  var symptom1 = req.body.symptom1;
+  var symptom2  = req.body.symptom2;
+  var symptom3 = req.body.symptom3;
+  var sql = `INSERT INTO diagnosis (userid, s1, s2, s3) VALUES ('${userid}','${symptom1}','${symptom2}','${symptom3}')`;
+
+  console.log(sql);
+  connection.query(sql, function(err, results) {
+    if (err) {
+      console.log(err);
+      res.send(err);
+      return;
+    }
+    console.log(results);
+    res.send('Next!'); 
+});
+});
+
+app.get('/api/predict', function(req, res) {
+   var sqltry = 'CALL predict_diseases';
+   var bestmatch = 'SELECT diseases.DiseaseName FROM diseases JOIN ( SELECT DiseaseName, COUNT(DiseaseName) AS count FROM ( (SELECT symptoms.DiseaseName FROM symptoms JOIN (SELECT diagnosis.s1 FROM diagnosis WHERE diagnosis.DiagnosisID = (SELECT LAST_INSERT_ID())) AS latest ON symptoms.SymptomName = latest.s1) UNION ALL (SELECT symptoms.DiseaseName FROM symptoms JOIN (SELECT diagnosis.s2 FROM diagnosis WHERE diagnosis.DiagnosisID = (SELECT LAST_INSERT_ID())) AS latest ON symptoms.SymptomName = latest.s2) UNION ALL (SELECT symptoms.DiseaseName FROM symptoms JOIN (SELECT diagnosis.s3 FROM diagnosis WHERE diagnosis.DiagnosisID = (SELECT LAST_INSERT_ID())) AS latest ON symptoms.SymptomName = latest.s3) ) AS possible_diseases GROUP BY DiseaseName HAVING count = ( SELECT MAX(incount) FROM ( SELECT DiseaseName, COUNT(DiseaseName) AS incount FROM ( (SELECT symptoms.DiseaseName FROM symptoms JOIN (SELECT diagnosis.s1 FROM diagnosis WHERE diagnosis.DiagnosisID = (SELECT LAST_INSERT_ID())) AS latest ON symptoms.SymptomName = latest.s1) UNION ALL (SELECT symptoms.DiseaseName FROM symptoms JOIN (SELECT diagnosis.s2 FROM diagnosis WHERE diagnosis.DiagnosisID = (SELECT LAST_INSERT_ID())) AS latest ON symptoms.SymptomName = latest.s2) UNION ALL (SELECT symptoms.DiseaseName FROM symptoms JOIN (SELECT diagnosis.s3 FROM diagnosis WHERE diagnosis.DiagnosisID = (SELECT LAST_INSERT_ID())) AS latest ON symptoms.SymptomName = latest.s3) ) AS possible_diseases GROUP BY DiseaseName ) AS sub ) ) AS countdis ON countdis.DiseaseName = diseases.DiseaseName ORDER BY Rarity DESC LIMIT 1';
+   var sqlupdate = 'UPDATE diagnosis SET DiseaseName = ('+bestmatch+') WHERE DiagnosisID = (SELECT LAST_INSERT_ID())';
+
+   connection.query(sqltry, function(err, result) {
+   if (err) {
+     res.send(err);
+     return;
+   }
+   connection.query(sqlupdate, function(err2, result2) {
+   if (err2) {
+     res.send(err2);
+     return;
+   }
+   });
+   res.json(result);
+});
+});
+
+app.get('/api/noofsymp', function(req, res) {
+   var sql = 'CALL Query4';
+   connection.query(sql, function(err, result) {
+   if (err) {
+     res.send(err);
+     return;
+   }
+   console.log(result);
+   res.json(result);
+  });
+});
+
+app.get('/api/mostsevere', function(req, res) {
+   var sql = 'CALL Query3';
+   connection.query(sql, function(err, result) {
+   if (err) {
+     res.send(err);
+     return;
+   }
+   console.log(result);
+   res.json(result);
+  });
+});
+
+app.get('/api/treatment', function(req, res) {
+  var sql = 'SELECT MedicineName, Composition, SideEffects, ImageURL FROM medicines JOIN (SELECT MedicineID FROM treatment JOIN (SELECT diagnosis.DiseaseName FROM diagnosis where diagnosis.DiagnosisID=(SELECT LAST_INSERT_ID())) AS predicted_disease ON predicted_disease.DiseaseName = treatment.DiseaseName) AS list_of_id ON list_of_id.MedicineID = medicines.MedicineID';
+
+  connection.query(sql, function(err, results) {
+    if (err) {
+      console.error('Error fetching medicine data:', err);
+      res.status(500).send({ message: 'Error fetching medicine data', error: err });
+      return;
+    }
+    console.log(results);
+    res.json(results);
+  });
+});
+
 app.listen(80, function () {
     console.log('Node app is running on port 80');
 });
+
