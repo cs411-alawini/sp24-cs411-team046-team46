@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <title>SickSense Predictions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .first-disease, .no-of-symptoms, .most-severe-symptom {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .common-match, .no-of-symptoms-title, .most-severe-symptom-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .gap {
+      margin-bottom: 50px; /* Adjust the margin to create space */
+    }
+  </style>
+</head>
+<body>
+  <h1>SickSense Predictions</h1>
+  <div class="gap"></div>
+  <div class="common-match" id="common-match"></div>
+  <div class="first-disease" id="first-disease"></div>
+  <div class="gap"></div>
+  <div class="no-of-symptoms-title" id="no-of-symptoms-title"></div> 
+  <div class="no-of-symptoms" id="no-of-symptoms"></div>
+  <div class="gap"></div>
+  <div class="most-severe-symptom-title" id="most-severe-symptom-title"></div>
+  <div class="most-severe-symptom" id="most-severe-symptom"></div>
+  <div class="gap"></div>
+  
+  <button type="button" class="btn btn-info mt-3" id="loadTreatmentBtn" data-toggle="modal" data-target="#viewTreatmentModal">
+     Recommended Treatments
+  </button>
+
+  <div class="gap"></div> 
+  <div class="modal fade" id="viewTreatmentModal" tabindex="-1" role="dialog" aria-labelledby="viewTreatmentModalLab>
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="viewTreatmentModalLabel">Potential Medication</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">No.</th>
+                  <th scope="col">Medicine Name</th>
+                  <th scope="col">Composition</th>
+                  <th scope="col">Possible Side Effects</th>
+                  <th scope="col">Image</th>
+                </tr>
+              </thead>
+              <tbody id="medicineBody">
+                <!-- Medicine info will be inserted here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  <table>
+    <thead>
+      <tr>
+        <th>Other Possible Diseases Matched</th>
+      </tr>
+    </thead>
+    <tbody id="diseases-list"></tbody>
+  </table>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      $('#loadTreatmentBtn').click(function() {
+         $.ajax({
+           url: '/api/treatment',
+           method: 'GET',
+           success: function(data) {
+             console.log(data);
+             var rows = '';
+             data.forEach(function(output, index) {
+               rows += `<tr>
+                          <th scope="row">${index + 1}</th>
+                          <td>${output.MedicineName}</td>
+                          <td>${output.Composition}</td>
+                          <td>${output.SideEffects}</td>
+                          <td>${output.ImageURL}</td>
+                        </tr>`;
+             });
+             $('#medicineBody').html(rows);
+           },
+           error: function() {
+             alert('Failed to load user data.');
+           }
+         });
+      });
+
+      fetch('/api/predict')
+        .then(response => response.json())
+        .then(data => {
+          const firstDisease = data[0].shift(); // Remove and get the first disease
+          const commonMatchElement = document.getElementById('common-match');
+          commonMatchElement.textContent = "The most common match is:"; // Display the common match line
+          
+          const firstDiseaseElement = document.getElementById('first-disease');
+          firstDiseaseElement.textContent = firstDisease ? firstDisease.DiseaseName : ''; // Display the first disease
+          
+          // Make a new fetch request to get the data from /noofsymp
+          fetch('/api/noofsymp')
+            .then(response => response.json()) // Assuming the response is JSON
+            .then(data => {
+              const noOfSymptomstitleElement = document.getElementById('no-of-symptoms-title');
+              noOfSymptomstitleElement.textContent = "No of registered symptoms:";
+                
+              const noOfSymptomsElement = document.getElementById('no-of-symptoms');
+              noOfSymptomsElement.textContent = data[0][0].no_of_symptoms; // Display the line and number of symptoms
+            })
+            .catch(error => {
+              console.error('Error fetching data from /noofsymp:', error);
+              const noOfSymptomsElement = document.getElementById('no-of-symptoms');
+              noOfSymptomsElement.textContent = 'Error fetching data from /noofsymp.';
+            });
+          
+          // Make a new fetch request to get the data from /mostsevere
+          fetch('/api/mostsevere')
+            .then(response => response.json()) // Assuming the response is JSON
+            .then(data => {
+              const mostSevereSymptomtitleElement = document.getElementById('most-severe-symptom-title');
+              mostSevereSymptomtitleElement.textContent = "Most severe symptom(s) recorded:";  
+              
+              const mostSevereSymptomElement = document.getElementById('most-severe-symptom');
+              const severeSymptoms = data[0].map(entry => entry.Most_Severe_Symptom); // Join all severe symptoms with line breaks
+              mostSevereSymptomElement.innerHTML = severeSymptoms;
+              mostSevereSymptomElement.textContent = severeSymptoms; // Display the line and most severe symptom
+            })
+            .catch(error => {
+              console.error('Error fetching data from /mostsevere:', error);
+              const mostSevereSymptomElement = document.getElementById('most-severe-symptom');
+              mostSevereSymptomElement.textContent = 'Error fetching data from /mostsevere.';
+            });
+          
+ 
+          const diseasesList = document.getElementById('diseases-list');
+          if (data.length === 0) {
+            diseasesList.innerHTML = '<tr><td colspan="1">No diseases found.</td></tr>';
+          } else {
+            const diseaseRows = data[0].map(disease => `<tr><td>${disease.DiseaseName}</td></tr>`).join('');
+            diseasesList.innerHTML = diseaseRows;
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+          const diseasesList = document.getElementById('diseases-list');
+          diseasesList.innerHTML = '<tr><td colspan="1">Error fetching data.</td></tr>';
+        });
+  });
+  </script>
+</body>
+</html>
