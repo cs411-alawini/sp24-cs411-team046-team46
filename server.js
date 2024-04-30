@@ -30,6 +30,14 @@ app.get('/', function(req, res) {
   res.render('base', { title: 'Homepage' });
 });
 
+app.get('/addSymptom', function(req, res) {
+  res.render('symptom', { title: 'Give your symptoms' });
+});
+
+app.get('/addDisease', function(req, res) {
+  res.render('disease', { title: 'Give your disease' });
+});
+
 app.get('/create', function(req, res) {
   res.render('index', { title: 'Add a new User' });
 });
@@ -60,8 +68,70 @@ app.get('/symptomlist', function(req, res) {
   });
 });
 
+app.post('/addNewSymptom', function(req, res) {
+  var symptomname = req.body.symptomname;
+  var severity = req.body.severity;
+  var disease = req.body.disease;
+  var sqlcheck = 'SELECT COUNT(*) FROM symptoms WHERE SymptomName = ? AND DiseaseName = ?';
+  var insertquery = `INSERT INTO symptoms (SymptomName, Severity, DiseaseName) VALUES ('${symptomname}', '${severity}', '${disease}')`;
+  connection.query(sqlcheck, [symptomname, disease], function(error, results) {
+    console.log(results);
+    if (results[0]["COUNT(*)"] >= 1) {
+      console.error('Symptom and Disease already exist');
+      res.status(500).send('Symptom and Disease already exist. Input again!');
+      return;
+    } else {
+  connection.query(insertquery, (err, results2) => {
+    if (err) {
+      return res.send(err);
+    }
+    res.send('Symptom added successfully!');
+  });}
+});
+});
 
-// this code is executed when a user clicks the form submit button
+app.post('/addNewDisease', function(req, res) {
+  var disease = req.body.disease;
+  var insertquery = `INSERT INTO diseases (DiseaseName) VALUES ('${disease}')`;
+  var sqlcheck = 'SELECT COUNT(*) FROM diseases WHERE DiseaseName = ?';
+
+  connection.query(sqlcheck, [disease], function(error, results) {
+//    console.log(results[0]);
+    if (results[0]["COUNT(*)"] >= 1) {
+      var sql = 'UPDATE diseases SET Rarity = Rarity + 1 WHERE DiseaseName = ?';
+      connection.query(sql, [disease], function(err1, results2) {
+        if (err1) {
+	   res.send(err1);
+	   return;
+	}
+  //      console.log(sql);
+        res.send('Disease already exists in database. Rarity Updated!');
+        return; });
+    } else {
+  connection.query(insertquery, function(err, results2) {
+//    console.log(results2);
+    if (err) {
+    	res.send(err);
+	return;
+    }
+    res.send("Disease added successfully!");
+})};
+});
+});
+app.get('/diseaselist', function(req, res) {
+    var sql = 'SELECT distinct DiseaseName FROM diseases';
+  //  console.log(sql);
+  connection.query(sql, function(err, results) {
+    if (err) {
+      console.error('Error fetching disease data:', err);
+      res.status(500).send({ message: 'Error fetching disease data', error: err });
+      return;
+    }
+//    console.log(results)
+    res.json(results);
+  });
+});
+
 app.post('/mark', function(req, res) {
   var userid = req.body.userid;
   var password  = req.body.password;

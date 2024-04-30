@@ -114,6 +114,8 @@
         <!-- Result container -->
         <div id="resultContainer" class="mt-3"></div>
         <button type="button" class="btn btn-success mt-3" id="redirectBtn">ChatBot</button>
+	<button type="button" class="btn btn-success mt-3" id="redirectBtn2">Add New Symptom</button>
+	<button type="button" class="btn btn-success mt-3" id="redirectBtn3">Add New Disease</button>
       </div>
     </div>
   </div>
@@ -158,6 +160,14 @@
       $('#redirectBtn').click(function() {
         // Redirect to another API call
         window.location.href = '/chatbot';
+      });
+      $('#redirectBtn2').click(function() {
+        // Redirect to another API call
+        window.location.href = '/addSymptom';
+      });
+      $('#redirectBtn3').click(function() {
+        // Redirect to another API call
+        window.location.href = '/addDisease';
       });
     });
   </script>
