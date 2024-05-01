@@ -279,27 +279,53 @@ app.get('/api/predict', function(req, res) {
 });
 
 app.get('/api/noofsymp', function(req, res) {
+   connection.beginTransaction(function (transerr) {
+   if (transerr) {
+      throw transerr;
+   }
    var sql = 'CALL Query4';
    connection.query(sql, function(err, result) {
    if (err) {
-     res.send(err);
-     return;
+     connection.rollback(function () {
+        res.status(500).send(err);
+     });
    }
+   connection.commit(function (err) {
+     if (err) {
+       connection.rollback(function () {
+          return;
+       })
+     }
+   });
    console.log(result);
    res.json(result);
   });
 });
+});
 
 app.get('/api/mostsevere', function(req, res) {
+   connection.beginTransaction(function (transerr) {
+   if (transerr) {
+      throw transerr;
+   }
    var sql = 'CALL Query3';
    connection.query(sql, function(err, result) {
    if (err) {
-     res.send(err);
-     return;
+     connection.rollback(function () {
+        res.status(500).send(err);
+     });
    }
+   connection.commit(function (err) {
+     if (err) {
+       connection.rollback(function () {
+          return;
+       })
+     }
+   });
    console.log(result);
    res.json(result);
   });
+});
 });
 
 app.get('/api/treatment', function(req, res) {
