@@ -15,7 +15,7 @@
     <div class="card">
       <div class="card-body">
         <h2>Please add your information below</h2>
-        <form action="mark" method="POST">
+        <form id="symptomForm">
           <div class="form-group">
             <label for="userid">User ID (Must be a number)</label>
             <input type="text" class="form-control col-lg-9" id="userid" placeholder="Enter User ID" name="userid">
@@ -32,7 +32,7 @@
 	    <label for="sex">Sex</label>
             <input type="text" class="form-control col-lg-9" id="sex" placeholder="Enter Sex" name="sex">
 	    <label for="age">Age</label>
-            <input type="text" class="form-control col-lg-9" id="netid" placeholder="Enter Age" name="age">
+            <input type="text" class="form-control col-lg-9" id="age" placeholder="Enter Age" name="age">
 	    <label for="race">Race</label>
             <input type="text" class="form-control col-lg-9" id="race" placeholder="Enter Race" name="race">
 	    <label for="email">Email</label>
@@ -61,6 +61,7 @@
             <table class="table">
               <thead>
                 <tr>
+                  <th scope="col">No.</th>
                   <th scope="col">User ID</th>
                   <th scope="col">First Name</th>
                   <th scope="col">Last Name</th>
@@ -82,6 +83,52 @@
   </div>
 
   <script>
+    $(document).ready(function() {
+      $('#symptomForm').submit(function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Get symptom values from form
+        var userid = $('#userid').val();
+        var password = $('#password').val();
+        var firstname = $('#firstname').val();
+        var lastname = $('#lastname').val();
+        var height = $('#height').val();
+        var weight = $('#weight').val();
+        var sex = $('#sex').val();
+        var age = $('#age').val();
+        var race = $('#race').val();
+        var email = $('#email').val();
+
+
+        // AJAX call to send symptom data to server
+        $.ajax({
+          url: '/mark',
+          method: 'POST',
+          data: {
+            userid: userid,
+            password: password,
+            firstname: firstname,
+	    lastname: lastname,
+	    height: height,
+	    weight: weight,
+	    sex: sex,
+	    age: age,
+	    race: race,
+	    email: email
+          },
+          success: function(response) {
+            // Display response in result container
+            window.location.href = '/main';
+          },
+          error: function(xhr, status, error) {
+            alert(xhr.responseText);
+          }
+        });
+      });
+    });
+  </script>
+
+  <script>
   $(document).ready(function() {
     $('#loadUsersBtn').click(function() {
       $.ajax({
@@ -92,6 +139,7 @@
           data.forEach(function(users, index) {
             rows += `<tr>
 		       <th scope="row">${index + 1}</th>
+		       <td>${users.UserID}</td>
 		       <td>${users.FirstName}</td>
 		       <td>${users.LastName}</td>
 		       <td>${users.Height}</td>

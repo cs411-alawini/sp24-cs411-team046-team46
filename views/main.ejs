@@ -13,8 +13,22 @@
 </head>
 
 <body>
+  <a href="/main">
+    <div class="sick-sense-logo" style="position: absolute;
+    width: 331px;
+    top: 34px;
+    left: 43px;
+    font-family: 'Inter-SemiBold', Helvetica;
+    font-weight: 600;
+    color: #000000cc;
+    font-size: 44px;
+    text-align: start;
+    letter-spacing: -0.84px;
+    line-height: 50.6px;
+    cursor: pointer;">🩺 SickSense</div>
+  </a>
   <div class="container mt-4">
-    <div class="card">
+    <div class="card" style="top: 130px">
       <div class="card-body">
         <h2>Please enter your symptoms below</h2>
         <form id="symptomForm">
@@ -137,7 +151,7 @@
             window.location.href = '/sicksense';
           },
           error: function() {
-            alert('Failed to track symptoms.');
+            alert('Symptom 1 cannot be empty!');
           }
         });
       });

@@ -13,7 +13,7 @@
     position: relative;
   }
   
-  .frame .text-wrapper {
+  .frame .ss-text-wrapper {
     position: relative;
     width: 331px;
     top: 34px;
@@ -27,7 +27,7 @@
     line-height: 50.6px;
   }
   
-  .frame .overlap {
+  .frame .ss-overlap {
     position: absolute;
     width: 517px;
     height: 440px;
@@ -35,10 +35,10 @@
     left: 125px;
   }
   
-  .frame .we-are-your-sixth {
+  .frame .ss-we-are-your-sixth {
     position: absolute;
     width: 517px;
-    top: -30px;
+    top: -30px !important;
     left: 0;
     font-family: "Inter-Bold", Helvetica;
     font-weight: 400;
@@ -48,19 +48,19 @@
     line-height: 80.5px;
   }
   
-  .frame .span {
+  .frame .ss-span {
     font-weight: 700;
     color: #000000bf;
     letter-spacing: -0.93px;
   }
   
-  .frame .text-wrapper-2 {
+  .frame .ss-text-wrapper-2 {
     font-weight: 700;
     color: #000000b2;
     letter-spacing: -0.93px;
   }
   
-  .frame .text-wrapper-3 {
+  .frame .ss-text-wrapper-3 {
     font-family: "Inter-SemiBold Italic", Helvetica;
     font-weight: 600;
     font-style: italic;
@@ -74,7 +74,7 @@
     letter-spacing: -0.93px;
   }
   
-  .frame .don-t-waste-time {
+  .frame .ss-don-t-waste-time {
     position: absolute;
     width: 517px;
     top: 173px;
@@ -87,11 +87,11 @@
     line-height: 50px;
   }
   
-  .frame .text-wrapper-5 {
+  .frame .ss-text-wrapper-5 {
     font-weight: 300;
   }
   
-  .frame .text-wrapper-6 {
+  .frame .ss-text-wrapper-6 {
     font-family: "Inter-Medium", Helvetica;
     font-weight: 500;
   }
@@ -106,8 +106,25 @@
     height: 58px;
     top: 607px;
     left: 125px;
-    background-image: url(./img/rectangle-1.svg);
-    background-size: 100% 100%;
+    background-image: url(../images/rectangle-1.svg);
+    background-size: cover; /* Ensure the SVG covers the button */
+    background-color: #ffffff;
+    border: none; /* Remove default button border */
+    border-radius: 30px;
+    color: #ffffff; /* Text color */
+    font-family: "Inter-SemiBold", Helvetica;
+    font-weight: 600;
+    font-size: 23px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+  }
+
+  .overlap-group:hover {
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.25);
+    transform: translateY(-2px);
   }
   
   .frame .text-wrapper-8 {
@@ -130,8 +147,25 @@
     height: 58px;
     top: 607px;
     left: 296px;
-    background-image: url(./img/rectangle-2.svg);
-    background-size: 100% 100%;
+    background-image: url(../images/rectangle-2.svg);
+    background-size: cover; /* Ensure the SVG covers the button */
+    background-color: #ffffff;
+    border: none; /* Remove default button border */
+    border-radius: 30px;
+    color: #ffffff; /* Text color */
+    font-family: "Inter-SemiBold", Helvetica;
+    font-weight: 600;
+    font-size: 23px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+  }
+
+  .div-wrapper:hover {
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.25);
+    transform: translateY(-2px);
   }
   
   .frame .text-wrapper-9 {
@@ -165,8 +199,25 @@
     height: 58px;
     top: 29px;
     left: 1274px;
-    background-image: url(./img/rectangle-3.svg);
-    background-size: 100% 100%;
+    background-image: url(../images/rectangle-3.svg);
+    background-size: cover; /* Ensure the SVG covers the button */
+    background-color: #ffffff;
+    border: none; /* Remove default button border */
+    border-radius: 30px;
+    color: #ffffff; /* Text color */
+    font-family: "Inter-SemiBold", Helvetica;
+    font-weight: 600;
+    font-size: 23px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+  }
+
+  .overlap-2:hover {
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.25);
+    transform: translateY(-2px);
   }
   
   .frame .text-wrapper-10 {

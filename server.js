@@ -23,7 +23,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(__dirname + '../public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function(req, res) {
   res.render('base', { title: 'Homepage' });
@@ -99,7 +99,7 @@ app.post('/addNewSymptom', function(req, res) {
     } else {
   connection.query(insertquery, (err, results2) => {
     if (err) {
-      return res.send(err);
+      return res.status(500).send('Symptom must not be an empty string.');
     }
     res.send('Symptom added successfully!');
   });}
@@ -116,7 +116,7 @@ app.post('/addNewDisease', function(req, res) {
       var sql = 'UPDATE diseases SET Rarity = Rarity + 1 WHERE DiseaseName = ?';
       connection.query(sql, [disease], function(err1, results2) {
         if (err1) {
-	   res.send(err1);
+	   res.status(500).send('error');
 	   return;
 	}
   //      console.log(sql);
@@ -126,7 +126,7 @@ app.post('/addNewDisease', function(req, res) {
   connection.query(insertquery, function(err, results2) {
 //    console.log(results2);
     if (err) {
-    	res.send(err);
+    	res.status(500).send('error');
 	return;
     }
     res.send("Disease added successfully!");
@@ -158,10 +158,11 @@ app.post('/mark', function(req, res) {
 console.log(sql);
   connection.query(sql, function(err, result) {
     if (err) {
-      res.send(err)
+      res.status(500).send('Some required fields are missing!');
       return;
     }
-    res.send('New user succesfully added!');
+    currUser = userid;
+    res.redirect('/main');
   });}
 });
 });
@@ -249,7 +250,7 @@ app.post('/api/update', function(req, res) {
   connection.query(sql, function(err, results) {
     if (err) {
       console.log(err);
-      res.send(err);
+      res.status(500).send({ message: 'Error symptom', error: err });
       return;
     }
     console.log(results);

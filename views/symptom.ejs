@@ -13,11 +13,25 @@
 </head>
 
 <body>
+  <a href="/main">
+    <div class="sick-sense-logo" style="position: absolute;
+    width: 331px;
+    top: 34px;
+    left: 43px;
+    font-family: 'Inter-SemiBold', Helvetica;
+    font-weight: 600;
+    color: #000000cc;
+    font-size: 44px;
+    text-align: start;
+    letter-spacing: -0.84px;
+    line-height: 50.6px;
+    cursor: pointer;">🩺 SickSense</div>
+  </a>
   <div class="container mt-4">
-    <div class="card">
+    <div class="card" style="top: 180px">
       <div class="card-body">
         <h2>Please add your information below</h2>
-        <form action="/addNewSymptom" method="POST">
+        <form id="symptomForm">
           <div class="form-group">
             <label for="symptomname">Symptom Name</label>
             <input type="text" class="form-control col-lg-9" id="symptomid" placeholder="Enter Symptom Name" name="symptomname">
@@ -28,28 +42,56 @@
               <option value="">Select Disease</option>
             </select>
             <script>
-        // Function to populate the dropdown list
-        function populateDropdown(diseases) {
-            const dropdown = document.getElementById("disease");
-            dropdown.innerHTML = '<option value="">Select Disease</option>';
-            console.log(diseases);
-            diseases.forEach(disease => {
+    $(document).ready(function() {
+      $('#symptomForm').submit(function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Get symptom values from form
+        var symptomid = $('#symptomid').val();
+	var severity = $('#severity').val();
+	var disease = $('#disease').val();
+
+        // AJAX call to send symptom data to server
+        $.ajax({
+          url: '/addNewSymptom',
+          method: 'POST',
+          data: {
+            symptomname: symptomid,
+            severity: severity,
+            disease: disease
+          },
+          success: function(response) {
+            // Display response in result container
+	    alert(response);
+          },
+          error: function() {
+            alert('Symptom cannot be empty!');
+          }
+        });
+      });
+    });
+              // Function to populate the dropdown list
+              function populateDropdown(diseases) {
+              const dropdown = document.getElementById("disease");
+              dropdown.innerHTML = '<option value="">Select Disease</option>';
+              console.log(diseases);
+              diseases.forEach(disease => {
                 console.log(disease);
                 const option = document.createElement("option");
                 option.value = disease["DiseaseName"];
                 option.textContent = disease["DiseaseName"];
                 dropdown.appendChild(option);
-            });
-            $(dropdown).select2();
-        }
+              });
+              $(dropdown).select2();
+            }
 
 
-        // Fetch data from server-side endpoint
-        fetch('/diseaselist')
-            .then(response => response.json())
-            .then(data => populateDropdown(data))
-            .catch(error => console.error('Error fetching diseases:', error));
-	</script>
+              // Fetch data from server-side endpoint
+              fetch('/diseaselist')
+              .then(response => response.json())
+              .then(data => populateDropdown(data))
+              .catch(error => console.error('Error fetching diseases:', error));
+	     </script>
           </div>
           <button type="submit" class="btn btn-primary">Submit</button>
        </form>
