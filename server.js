@@ -227,16 +227,29 @@ app.post('/chat', async function (req, res) {
 });
 
 app.get('/api/users', function(req, res) {
+  connection.beginTransaction(function (transerr) {
+  if (transerr) {
+     throw transerr;
+  }
   var sql = 'SELECT * FROM users';
 
   connection.query(sql, function(err, results) {
     if (err) {
-      console.error('Error fetching user data:', err);
-      res.status(500).send({ message: 'Error fetching user data', error: err });
-      return;
+      connection.rollback(function () {
+         console.error('Error fetching user data:', err);
+         res.status(500).send({ message: 'Error fetching user data', error: err });
+      });
     }
+    connection.commit(function (err) {
+     if (err) {
+       connection.rollback(function () {
+          return;
+       })
+     }
+    });
     res.json(results);
   });
+});
 });
 
 app.post('/api/update', function(req, res) {
