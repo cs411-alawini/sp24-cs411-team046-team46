@@ -94,12 +94,13 @@ app.post('/addNewSymptom', function(req, res) {
     console.log(results);
     if (results[0]["COUNT(*)"] >= 1) {
       console.error('Symptom and Disease already exist');
-      res.status(500).send('Symptom and Disease already exist. Input again!');
+      res.status(500).send('Symptom and disease already exist. Try again!');
       return;
     } else {
   connection.query(insertquery, (err, results2) => {
     if (err) {
-      return res.status(500).send('Symptom must not be an empty string.');
+      res.status(500).send('Some fields are missing!');
+      return;
     }
     res.send('Symptom added successfully!');
   });}

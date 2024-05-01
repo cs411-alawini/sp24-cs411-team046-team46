@@ -64,8 +64,8 @@
             // Display response in result container
 	    alert(response);
           },
-          error: function() {
-            alert('Symptom cannot be empty!');
+          error: function(xhr, status, error) {
+            alert(xhr.responseText);
           }
         });
       });
