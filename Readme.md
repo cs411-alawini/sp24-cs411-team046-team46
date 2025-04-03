@@ -1,3 +1,3 @@
-# team046-team46
+# SickSense
 
-We are team46.
+This is a web application that utilizes an AI chatbot that helps users with their health issues and provides medication by taking their symptoms and other medical information as inputs. The user can set up their own account and enter relevant personal and medical information. After inputting their symptoms, the user is shown probable diseases that they might be experiencing. The user can also access information about the disease to plan out possible next steps regarding their health concern. The disease prediction is based on various public datasets that provide information regarding diseases and their related symptoms. A login system will lets us save user data such as medical records or past chatbot queries to allow for a more personal user experience.
